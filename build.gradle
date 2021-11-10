@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+}
+sourceSets {
+    jmh {
+        java {
+            compileClasspath += sourceSets.main.output
+            runtimeClasspath += sourceSets.main.output
+        }
+    }
+}
+
+configurations {
+    jmhImplementation.extendsFrom implementation
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    jmhAnnotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:1.33"
+    jmhImplementation 'org.openjdk.jmh:jmh-core:1.33'
+    jmhImplementation 'org.openjdk.jmh:jmh-generator-annprocess:1.33'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task printSourceSetInformation(){
+
+    doLast{
+        sourceSets.each { srcSet ->
+            println "["+srcSet.name+"]"
+            print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
+            print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+            print "-->Compile classpath:\n"
+            srcSet.compileClasspath.files.each {
+                print "  "+it.path+"\n"
+            }
+            println ""
+        }
+    }
+}
